@@ -20,11 +20,9 @@ class MessageSent implements ShouldBroadcast
      * Create a new event instance.
      */
     public $message;
-    public $conversationID;
-    public function __construct(Message $message, Conversation $conversationID)
+    public function __construct(Message $message)
     {
         $this->message = $message;
-        $this->conversationID = $conversationID;
     }
 
     /**
@@ -34,20 +32,13 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn(): PresenceChannel
     {
-        return new PresenceChannel('chat.' . $this->conversationID);
+        return new PresenceChannel('chat.' . $this->message->conversation_id);
 
     }
     public function broadcastWith()
     {
         return [
-            'id' => $this->message->id,
-            'user_id' => $this->message->user_id,
-            'content' => $this->message->content,
-            'created_at' => $this->message->created_at->toDateTimeString(),
-            'user' => [
-                'id' => $this->message->user->id,
-                'name' => $this->message->user->name,
-            ],
+            'message' => $this->message
         ];
     }
 }

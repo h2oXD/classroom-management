@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Http\Requests\StoreConversationRequest;
 use App\Http\Requests\UpdateConversationRequest;
+use App\Models\Message;
 
 class ConversationController extends Controller
 {
@@ -13,8 +14,9 @@ class ConversationController extends Controller
      */
     public function index($conversationID)
     {
-        $conversation = Conversation::find($conversationID);
-        return view('clients.conversations',compact(['conversationID','conversation']));
+        $listMessage = Message::where('conversation_id',$conversationID)->with('user')->get();
+        // dd($listMessage);
+        return view('clients.conversations',compact(['conversationID','listMessage']));
     }
 
     /**

@@ -1,16 +1,36 @@
-@extends('layouts.master')
-@section('title', 'Conversations')
-@section('first')
-    <meta name="csrf-token" content="{{csrf_token()}}">
-@endsection
-@section('last')
-    @vite('resources/js/chat.js')
-@endsection
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Document</title>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('assets/assets/images/favicon.ico') }}">
+
+    <!-- Theme Config Js -->
+    <script src="{{ asset('assets/assets/js/config.js') }}"></script>
+
+    <!-- Vendor css -->
+    <link href="{{ asset('assets/assets/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- App css -->
+    <link href="{{ asset('assets/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+
+    <!-- Icons css -->
+    <link href="{{ asset('assets/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
     <div class="container mt-3">
         <div class="card">
             <div class="chat d-flex">
-                <div class="offcanvas-xxl offcanvas-start" tabindex="-1" id="chatUserList" aria-labelledby="chatUserListLabel">
+                <div class="offcanvas-xxl offcanvas-start" tabindex="-1" id="chatUserList"
+                    aria-labelledby="chatUserListLabel">
                     <div id="chat-user-list" class="collapse collapse-horizontal show">
                         <div class="chat-user-list border-end">
                             <div class="card-body py-2 px-3 border-bottom">
@@ -34,7 +54,8 @@
                                     <div class="dropdown lh-1">
                                         <a href="#" class="dropdown-toggle drop-arrow-none card-drop"
                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                            <iconify-icon icon="solar:settings-outline" class="align-middle"></iconify-icon>
+                                            <iconify-icon icon="solar:settings-outline"
+                                                class="align-middle"></iconify-icon>
                                         </a>
                                     </div>
                                 </div>
@@ -58,10 +79,10 @@
                                                             class="d-flex align-items-center px-3 py-2 bg-body-secondary position-sticky top-0 z-1">
                                                         </div><!-- end chat-title -->
                                                         <div id="user-online">
-                                                            
+
                                                         </div>
-                                                        
-  
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -108,15 +129,15 @@
 
                             <div class="d-flex align-items-center gap-2">
                                 <a href="javascript: void(0);"
-                                    class="btn btn-sm btn-icon btn-ghost-light d-none d-xl-flex" data-bs-toggle="modal"
-                                    data-bs-target="#userCall" data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="Voice Call">
+                                    class="btn btn-sm btn-icon btn-ghost-light d-none d-xl-flex"
+                                    data-bs-toggle="modal" data-bs-target="#userCall" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Voice Call">
                                     <i class="ti ti-phone-call fs-20"></i>
                                 </a>
                                 <a href="javascript: void(0);"
-                                    class="btn btn-sm btn-icon btn-ghost-light d-none d-xl-flex" data-bs-toggle="modal"
-                                    data-bs-target="#userVideoCall" data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="Video Call">
+                                    class="btn btn-sm btn-icon btn-ghost-light d-none d-xl-flex"
+                                    data-bs-toggle="modal" data-bs-target="#userVideoCall" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Video Call">
                                     <i class="ti ti-video fs-20"></i>
                                 </a>
 
@@ -129,39 +150,36 @@
 
                     <div>
                         <div class="chat-scroll p-3" data-simplebar>
-                            <ul class="chat-list" data-apps-chat="messages-list">
-                                <li class="chat-group" id="even-4">
-                                    <div class="chat-body">
-                                        <div>
-                                            <h6 class="d-inline-flex">James.</h6>
-                                            <h6 class="d-inline-flex text-muted">10:18pm</h6>
-                                        </div>
+                            <ul class="chat-list" id="chat-list" data-apps-chat="messages-list">
+                                @foreach ($listMessage as $item)
+                                    @if ($item->user_id == Auth::user()->id)
+                                        <li class="chat-group odd">
+                                            <div class="chat-body">
+                                                <div>
+                                                    <h6 class="d-inline-flex">User {{ $item->user_id }}</h6>
+                                                </div>
 
-                                        <div class="chat-message">
-                                            <p>Apologies 😔, I've got another meeting at 2pm. Could we possibly shift it to
-                                                3pm?</p>
-
-                                            <div class="chat-actions dropdown">
-                                                <button class="btn btn-sm btn-link link-reset" data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                    <i class="ti ti-dots-vertical"></i>
-                                                </button>
-
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#"><i
-                                                            class="ti ti-copy fs-14 align-text-top me-1"></i> Copy
-                                                        Message</a>
-                                                    <a class="dropdown-item" href="#"><i
-                                                            class="ti ti-edit-circle fs-14 align-text-top me-1"></i>
-                                                        Edit</a>
-                                                    <a class="dropdown-item" href="#" data-dismissible="#even-4"><i
-                                                            class="ti ti-trash fs-14 align-text-top me-1"></i>Delete</a>
+                                                <div class="chat-message">
+                                                    <p>{{ $item->content }}</p>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="chat-group odd" id="odd-4">
+                                        </li>
+                                    @else
+                                        <li class="chat-group">
+                                            <div class="chat-body">
+                                                <div>
+                                                    <h6 class="d-inline-flex">User {{ $item->user_id }}</h6>
+                                                </div>
+
+                                                <div class="chat-message">
+                                                    <p>{{ $item->content }}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    @endif
+                                @endforeach
+                                <div id="even-4"></div>
+                                {{-- <li class="chat-group odd" id="odd-4">
                                     <div class="chat-body">
                                         <div>
                                             <h6 class="d-inline-flex">You.</h6>
@@ -170,7 +188,8 @@
 
                                         <div class="chat-message">
                                             <p>3pm works for me 👍. Absolutely, let's dive into the presentation format.
-                                                It'd be fantastic to wrap that up today. I'm attaching last year's format
+                                                It'd be fantastic to wrap that up today. I'm attaching last year's
+                                                format
                                                 and assets here for reference.</p>
 
                                             <div class="chat-actions dropdown">
@@ -186,13 +205,14 @@
                                                     <a class="dropdown-item" href="#"><i
                                                             class="ti ti-edit-circle fs-14 align-text-top me-1"></i>
                                                         Edit</a>
-                                                    <a class="dropdown-item" href="#" data-dismissible="#odd-4"><i
+                                                    <a class="dropdown-item" href="#"
+                                                        data-dismissible="#odd-4"><i
                                                             class="ti ti-trash fs-14 align-text-top me-1"></i>Delete</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
 
@@ -206,14 +226,14 @@
                                 </div>
 
                                 <div class="col">
-                                    <input type="text" id="inputMessage" class="form-control"
+                                    <input type="text" id="inputMessage" name="content" class="form-control"
                                         placeholder="Type Message...">
                                 </div>
 
                                 <div class="col-sm-auto">
                                     <div class="d-flex align-items-center gap-1">
-                                        <button type="submit" id="btnSendMassage" class="btn btn-icon btn-success"><i
-                                                class='ti ti-send'></i></button>
+                                        <button type="submit" id="btnSendMessage"
+                                            class="btn btn-icon btn-success"><i class='ti ti-send'></i></button>
 
                                         <a href="#" class="btn btn-icon btn-soft-primary"><i
                                                 class="ti ti-microphone"></i> </a>
@@ -228,9 +248,32 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('assets/assets/js/vendor.min.js') }}"></script>
+
+    <!-- App js -->
+    <script src="{{ asset('assets/assets/js/app.js') }}"></script>
+
+    @vite('resources/js/chat.js')
     <script>
         var userID = {{ auth()->user()->id }};
-        let conversationID = {{$conversationID}};
-        // let routeMassage = {{route('post.chat',$conversationID)}}
+        var conversationID = {{ $conversationID }};
+        let route = "{{ route('post.chat', $conversationID) }}";
+        // console.log(route);
+
+        let btnSendMessage = document.querySelector('#btnSendMessage')
+        let inputMessage = document.querySelector('#inputMessage')
+        btnSendMessage.addEventListener('click', function() {
+            event.preventDefault()
+            let message = inputMessage.value
+            axios.post('http://classroom-management.test/conversations/' + conversationID, {
+                    content: message
+                })
+                .then((res) => {
+                    console.log(res.data);
+                })
+            inputMessage.value = '';
+        })
     </script>
-@endsection
+</body>
+
+</html>

@@ -67,5 +67,5 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('conversations', ConversationController::class);
     Route::get('chat/{conversationID}',[ConversationController::class,'index'])->name('chat.app');
-    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('post.chat');
+    Route::post('conversations/{conversation}', [MessageController::class, 'store'])->name('post.chat');
 });

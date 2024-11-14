@@ -1,5 +1,6 @@
 import axios from 'axios';
 import './bootstrap';
+
 let userOnline = document.querySelector('#user-online')
 window.Echo.join('chat.' + conversationID)
     .here(users => {
@@ -40,21 +41,25 @@ window.Echo.join('chat.' + conversationID)
     .leaving(user => {
         console.log(user);
         let userDom = document.querySelector(`.user-${user.id}`)
-        if(userDom){
+        if (userDom) {
             userOnline.remove()
         }
     })
-
-let btnSendMassage = document.querySelector('#btnSendMassage')
-let inputMassage = document.querySelector('#inputMessage')
-
-btnSendMassage.addEventListener('click',function(){
-    let massage = inputMassage.value
-    console.log(inputMassage);
-    
-    window.axios.post(routeMassage, {massage})
-    .then(function(res){
-        console.log(res.data);
-        
+    .listen('MessageSent', function (event) {
+        updateUI(event)
     })
-})
+
+let content = document.querySelector('#even-4')
+function updateUI(event) {
+    let odd = event.message.user_id == userID ? 'odd' : ''
+    let UI = `<li class="chat-group ${odd}"><div class="chat-body">
+                <div>
+                    <h6 class="d-inline-flex">User - ${event.message.user_id}</h6>
+                </div>
+
+                <div class="chat-message">
+                    <p>${event.message.content}</p>
+                </div>
+            </div></li>`
+    content.insertAdjacentHTML('beforebegin', UI)
+}
