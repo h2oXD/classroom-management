@@ -54,7 +54,7 @@ class ClassroomController extends Controller
 
             do {
                 $classroom_code = fake()->unique()->numerify('CLR######');
-            } while (Teacher::where('teacher_code', $classroom_code)->exists());
+            } while (ClassroomSubject::where('classroom_code', $classroom_code)->exists());
 
             // dd($request->teacher_id);
             ClassroomSubject::insert([
