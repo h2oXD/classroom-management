@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\SendWelcomeMail;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -32,6 +34,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
+    protected function registered(Request $request, $user)
+    {
+        SendWelcomeMail::dispatch($user);
+    }
     protected function redirectTo()
     {
         $user = Auth::user();

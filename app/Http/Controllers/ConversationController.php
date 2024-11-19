@@ -15,7 +15,6 @@ class ConversationController extends Controller
     public function index($conversationID)
     {
         $listMessage = Message::where('conversation_id',$conversationID)->with('user')->get();
-        // dd($listMessage);
         return view('clients.conversations',compact(['conversationID','listMessage']));
     }
 

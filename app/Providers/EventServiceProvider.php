@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\LoginHistory;
+use App\Events\SendWelcomeMail;
+use App\Listeners\SendMail;
 use App\Listeners\StoreLoginHistory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         LoginHistory::class => [
             StoreLoginHistory::class,
+        ],
+        SendWelcomeMail::class => [
+            SendMail::class,
         ],
     ];
 
