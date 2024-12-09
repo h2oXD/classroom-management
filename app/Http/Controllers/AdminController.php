@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+    const PATH_VIEW_ADMIN = 'admins.';
     public function dashboard()
     {
-        return view('admins.dashboard');
+        return view(self::PATH_VIEW_ADMIN . __FUNCTION__);
     }
     
 

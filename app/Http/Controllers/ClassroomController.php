@@ -46,6 +46,7 @@ class ClassroomController extends Controller
     public function store(StoreClassroomRequest $request)
     {
         try {
+
             DB::beginTransaction();
 
             $classroom = Classroom::create([
@@ -55,18 +56,16 @@ class ClassroomController extends Controller
             do {
                 $classroom_code = fake()->unique()->numerify('CLR######');
             } while (ClassroomSubject::where('classroom_code', $classroom_code)->exists());
-
-            // dd($request->teacher_id);
             ClassroomSubject::insert([
-                'classroom_id' => $classroom->id,
-                'subject_id' => $request->subject_id,
-                'teacher_id' => $request->teacher_id,
+                'classroom_id'   => $classroom->id,
+                'subject_id'     => $request->subject_id,
+                'teacher_id'     => $request->teacher_id,
                 'classroom_code' => $classroom_code
             ]);
-            
+
             Conversation::create([
-                'classroom_id' => $classroom->id,
-                'title' => $classroom->name,
+                'classroom_id'  => $classroom->id,
+                'title'         => $classroom->name,
             ]);
 
             DB::commit();
@@ -91,6 +90,7 @@ class ClassroomController extends Controller
         $classroom->with(['subjects', 'teachers']);
         $subjects = Subject::all();
         $teachers = Teacher::with('user')->get();
+
         return view(self::PATH_VIEW . __FUNCTION__, compact([
             'subjects',
             'teachers',
@@ -104,16 +104,21 @@ class ClassroomController extends Controller
     public function update(UpdateClassroomRequest $request, Classroom $classroom)
     {
         try {
+
             DB::beginTransaction();
+
             $classroom->update([
                 'name' => $request->name,
             ]);
+
             ClassroomSubject::where('classroom_id', $classroom->id)->update([
-                'classroom_id' => $classroom->id,
-                'subject_id' => $request->subject_id,
-                'teacher_id' => $request->teacher_id,
+                'classroom_id'   => $classroom->id,
+                'subject_id'     => $request->subject_id,
+                'teacher_id'     => $request->teacher_id,
             ]);
+
             DB::commit();
+
             return redirect(route('classrooms.edit', $classroom))->with('success', true);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -150,23 +155,24 @@ class ClassroomController extends Controller
                     $classroom->enrollments_count += 1;
 
                     Enrollment::insert([
-                        'student_id' => $student->id,
-                        'classroom_id' => $classroom->id,
-                        'enrollment_date' => now(),
-                        'status' => 'approved'
+                        'student_id'        => $student->id,
+                        'classroom_id'      => $classroom->id,
+                        'enrollment_date'   => now(),
+                        'status'            => 'approved'
                     ]);
 
-                    $conversationID = Conversation::where('classroom_id',$classroom->id)->first();
-                    // dd($student->user->id);
+                    $conversationID = Conversation::where('classroom_id', $classroom->id)->first();
+   
                     ConversationParticipant::insert([
-                        'user_id' => $student->user->id,
-                        'conversation_id' => $conversationID->id,
+                        'user_id'           => $student->user->id,
+                        'conversation_id'   => $conversationID->id,
                     ]);
 
                 } else {
                     break;
                 }
             }
+
             DB::commit();
             return redirect()->back()->with('success', 'Phân lớp tự động thành công.');
         } catch (\Throwable $th) {
@@ -175,17 +181,4 @@ class ClassroomController extends Controller
         }
 
     }
-
-    // public function listStudents(Classroom $classroom)
-    // {
-    //     $students = $classroom->students;
-    //     return view('classrooms.students', compact('students'));
-    // }
-
-    // public function removeStudent(Classroom $classroom, Student $student)
-    // {
-    //     $student->classroom_id = null;
-    //     $student->save();
-    //     return redirect()->back()->with('success', 'Học sinh đã được xóa khỏi lớp.');
-    // }
 }

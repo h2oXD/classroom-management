@@ -35,13 +35,16 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
+
             $user = User::create([
                 'name' => request()->name,
                 'email' => request()->email,
                 'password' => Hash::make(request()->password),
                 'role' => $request->role,
             ]);
+
             if ($user->role == '1') {
+                //Nếu là sinh viên tạo sinh viên và tạo mã sinh viên
                 do {
                     $studentCode = fake()->unique()->numerify('SV######');
                 } while (Student::where('student_code', $studentCode)->exists());
@@ -50,6 +53,7 @@ class UserController extends Controller
                     'student_code' => $studentCode,
                 ]);
             } elseif ($user->role == '2') {
+                //Nếu là giảng viên tạo giảng viên và tạo mã giảng viên
                 do {
                     $teacherCode = fake()->unique()->numerify('GV######');
                 } while (Teacher::where('teacher_code', $teacherCode)->exists());
@@ -58,6 +62,7 @@ class UserController extends Controller
                     'teacher_code' => $teacherCode,
                 ]);
             }
+
             DB::commit();
             return redirect()->back()->with('success', 'Thêm mới người dùng thành công');
         } catch (\Throwable $th) {
